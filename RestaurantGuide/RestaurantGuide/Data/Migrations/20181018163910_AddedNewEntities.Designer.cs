@@ -11,7 +11,7 @@ using System;
 namespace RestaurantGuide.Data.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20181017185347_AddedNewEntities")]
+    [Migration("20181018163910_AddedNewEntities")]
     partial class AddedNewEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,14 +129,14 @@ namespace RestaurantGuide.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("RestaurantGuide.Domain.Rating", b =>
+            modelBuilder.Entity("RestaurantGuide.Domain.Photo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("PlaceId");
+                    b.Property<string>("Name");
 
-                    b.Property<int>("Rate");
+                    b.Property<int>("PlaceId");
 
                     b.Property<string>("UserId");
 
@@ -146,7 +146,7 @@ namespace RestaurantGuide.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rating");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("RestaurantGuide.Domain.Review", b =>
@@ -157,6 +157,8 @@ namespace RestaurantGuide.Data.Migrations
                     b.Property<DateTime>("Date");
 
                     b.Property<int>("PlaceId");
+
+                    b.Property<int>("Rate");
 
                     b.Property<int>("Text");
 
@@ -231,7 +233,11 @@ namespace RestaurantGuide.Data.Migrations
 
                     b.Property<string>("Title");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Places");
                 });
@@ -281,15 +287,15 @@ namespace RestaurantGuide.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("RestaurantGuide.Domain.Rating", b =>
+            modelBuilder.Entity("RestaurantGuide.Domain.Photo", b =>
                 {
                     b.HasOne("RestaurantGuide.Models.Place", "Place")
-                        .WithMany("Rating")
+                        .WithMany("Photos")
                         .HasForeignKey("PlaceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("RestaurantGuide.Models.ApplicationUser", "User")
-                        .WithMany("Rating")
+                        .WithMany("Photos")
                         .HasForeignKey("UserId");
                 });
 
@@ -302,6 +308,13 @@ namespace RestaurantGuide.Data.Migrations
 
                     b.HasOne("RestaurantGuide.Models.ApplicationUser", "User")
                         .WithMany("Reviews")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("RestaurantGuide.Models.Place", b =>
+                {
+                    b.HasOne("RestaurantGuide.Models.ApplicationUser", "User")
+                        .WithMany("Places")
                         .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618

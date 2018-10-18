@@ -14,7 +14,7 @@ namespace RestaurantGuide.Data
 
         public DbSet<Place> Places { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Rating> Rating { get; set; }
+        public DbSet<Photo> Photos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
