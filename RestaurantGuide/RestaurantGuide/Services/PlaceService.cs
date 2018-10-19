@@ -4,6 +4,7 @@ using RestaurantGuide.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RestaurantGuide.Domain;
 
 namespace RestaurantGuide.Services
 {
@@ -83,7 +84,7 @@ namespace RestaurantGuide.Services
 
             var photos = _context.Photos.Where(p => p.PlaceId == place.Id).ToList();
 
-            if(photos.Count() > 0)
+            if(photos.Count > 0)
             {
                 var photosList = new List<PhotoViewModels>();
                 foreach(var photo in photos)
@@ -107,9 +108,38 @@ namespace RestaurantGuide.Services
             return placeModel;
         }
 
-        //public int AddPlace(PlaceViewModels placeModel)
-        //{
+        public int AddPlace(PlaceViewModels placeModel)
+        {
+            if (placeModel.MainPhoto == null)
+            {
+                throw new Exception("Main photo is not set");
+            }
 
-        //}
+            var place = new Place()
+            {
+                Title = placeModel.Title,
+                Description = placeModel.Description,
+                UserId = placeModel.UserId
+            };
+
+            _context.Places.Add(place);
+            _context.SaveChanges();
+
+            if (placeModel.MainPhoto != null)
+            {
+                var photo = new Photo()
+                {
+                    Name = placeModel.MainPhoto.Name,
+                    UploadDate = DateTime.Now,
+                    IsMain = true,
+                    UserId = placeModel.UserId,
+                    PlaceId = place.Id
+                };
+                _context.Photos.Add(photo);
+                _context.SaveChanges();
+            }
+
+            return place.Id;
+        }
     }
 }
