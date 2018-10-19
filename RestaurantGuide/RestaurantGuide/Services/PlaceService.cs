@@ -5,16 +5,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using RestaurantGuide.Domain;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace RestaurantGuide.Services
 {
     public class PlaceService : IPlaceService
     {
-        protected readonly ApplicationContext _context;
+        private readonly ApplicationContext _context;
+        private readonly IHostingEnvironment _environment;
+        private readonly FileUploadService _fileUploadService;
 
-        public PlaceService(ApplicationContext context)
+        public PlaceService(
+            ApplicationContext context, 
+            IHostingEnvironment environment, FileUploadService fileUploadService)
         {
             _context = context;
+            _environment = environment;
+            _fileUploadService = fileUploadService;
         }
 
         public List<PlaceListItemViewModels> GetPlaces()
@@ -92,7 +100,8 @@ namespace RestaurantGuide.Services
                     var photoItem = new PhotoViewModels()
                     {
                         Id = photo.Id,
-                        Name = photo.Name,
+                        FileName = photo.FileName,
+                        FilePath = photo.FilePath,
                         IsMain = photo.IsMain,
                         UploadDate = photo.UploadDate,
                         PlaceId = photo.PlaceId,
@@ -114,7 +123,7 @@ namespace RestaurantGuide.Services
             {
                 throw new Exception("Main photo is not set");
             }
-
+            
             var place = new Place()
             {
                 Title = placeModel.Title,
@@ -124,12 +133,13 @@ namespace RestaurantGuide.Services
 
             _context.Places.Add(place);
             _context.SaveChanges();
-
+            
             if (placeModel.MainPhoto != null)
             {
                 var photo = new Photo()
                 {
-                    Name = placeModel.MainPhoto.Name,
+                    FileName = placeModel.MainPhoto.FileName,
+                    FilePath = $"images/{placeModel.MainPhoto.FileName}",
                     UploadDate = DateTime.Now,
                     IsMain = true,
                     UserId = placeModel.UserId,
@@ -137,6 +147,12 @@ namespace RestaurantGuide.Services
                 };
                 _context.Photos.Add(photo);
                 _context.SaveChanges();
+
+                string path = Path.Combine(
+                    _environment.WebRootPath,
+                    $"images\\");
+
+                _fileUploadService.Upload(path, placeModel.MainPhoto.FileName, placeModel.MainPhoto);
             }
 
             return place.Id;

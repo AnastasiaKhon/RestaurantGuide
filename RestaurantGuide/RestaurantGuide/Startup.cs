@@ -35,6 +35,8 @@ namespace RestaurantGuide
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IPlaceService, PlaceService>();
+            services.AddTransient<FileUploadService>();
 
             services.AddMvc();
         }
