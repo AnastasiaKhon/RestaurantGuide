@@ -1,14 +1,13 @@
-﻿@model RestaurantGuide.Models.PlaceListItemViewModels
+﻿@using RestaurantGuide.Models
+@model PlaceViewModels
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
+<h3>Details</h3>
+<hr />
 <div>
-    <h4>PlaceListItemViewModels</h4>
-    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Title)
@@ -17,26 +16,54 @@
             @Html.DisplayFor(model => model.Title)
         </dd>
         <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MainPhotoPath)
+        </dt>
+        <dd>
+            <img src="~/@Model.MainPhotoPath" />
+        </dd>
+        <dt>
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Rating)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PhotosCount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PhotosCount)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ReviewCount)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ReviewCount)
-        </dd>
     </dl>
 </div>
+
+<h3>Gallery</h3>
+<hr />
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
 </div>
+
+<h3>Rating</h3>
+<hr />
+<div>
+
+</div>
+<hr />
+
+<h3>Reviews</h3>
+@*<div>
+    @foreach (var item in Model.Reviews)
+    {
+        <div>On @item.Date, @item.UserName said: </div>
+        <div>@item.Text</div>
+        <div>@item.Rating</div>
+    }
+</div>*@
+
+<h3>Add review</h3>
+<textarea asp-for="Description" class="form-control"></textarea>
+
+<hr />
+@*<div>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>*@

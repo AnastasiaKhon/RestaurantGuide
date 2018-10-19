@@ -7,6 +7,7 @@ using System.Linq;
 using RestaurantGuide.Domain;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace RestaurantGuide.Services
 {
@@ -52,7 +53,11 @@ namespace RestaurantGuide.Services
 
         public PlaceViewModels GetPlace(int id)
         {
-            var place = _context.Places.FirstOrDefault(p => p.Id == id);
+            var place = _context.Places
+                .Include(p => p.User)
+                .Include(p => p.Reviews)
+                .Include(p => p.Photos)
+                .FirstOrDefault(p => p.Id == id);
 
             if (place == null)
             {
@@ -68,35 +73,22 @@ namespace RestaurantGuide.Services
                 UserName = place.User.UserName
             };
 
-            var reviews = _context.Reviews.Where(r => r.PlaceId == place.Id).ToList();
+            var mainPhoto = place.Photos.FirstOrDefault(p => p.PlaceId == place.Id && p.IsMain);
 
-            if (reviews.Count() > 0)
+            if(mainPhoto != null)
             {
-                var reviewsList = new List<ReviewViewModels>();
-                foreach (var review in reviews)
-                {
-                    var reviewItem = new ReviewViewModels()
-                    {
-                        Id = review.Id,
-                        Text = review.Text,
-                        Date = review.Date,
-                        Rating = review.Rating,
-                        UserId = review.UserId,
-                        UserName = review.User.UserName,
-                        PlaceId = review.PlaceId
-                    };
-                    reviewsList.Add(reviewItem);
-                }
-
-                placeModel.Reviews = reviewsList;
+                placeModel.MainPhotoPath = mainPhoto.FilePath;
             }
 
-            var photos = _context.Photos.Where(p => p.PlaceId == place.Id).ToList();
+            //var photos = _context.Photos
+            //    .Include(r => r.User)
+            //    .Include(r => r.Place)
+            //    .Where(p => p.PlaceId == place.Id).ToList();
 
-            if(photos.Count > 0)
+            if (place.Photos.Count > 0)
             {
                 var photosList = new List<PhotoViewModels>();
-                foreach(var photo in photos)
+                foreach (var photo in place.Photos)
                 {
                     var photoItem = new PhotoViewModels()
                     {
@@ -115,10 +107,42 @@ namespace RestaurantGuide.Services
                 placeModel.Photos = photosList;
             }
 
+            //var reviews = _context.Reviews
+            //    .Include(r => r.User)
+            //    .Include(r => r.Place)
+            //    .Where(r => r.PlaceId == place.Id).ToList();
+
+            if (place.Reviews.Count() > 0)
+            {
+                var reviewsList = new List<ReviewViewModels>();
+                foreach (var review in place.Reviews)
+                {
+                    var reviewItem = new ReviewViewModels()
+                    {
+                        Id = review.Id,
+                        Text = review.Text,
+                        Date = review.Date,
+                        Rating = review.Rating,
+                        UserId = review.UserId,
+                        UserName = review.User.UserName,
+                        PlaceId = review.PlaceId
+                    };
+                    reviewsList.Add(reviewItem);
+                }
+
+                placeModel.Reviews = reviewsList;
+
+                placeModel.Rating = Math.Round(place.Reviews.Sum(r => r.Rating) / (double)place.Reviews.Count, 1);
+            }
+            else
+            {
+                placeModel.Rating = 0;
+            }
+
             return placeModel;
         }
 
-        public int AddPlace(PlaceViewModels placeModel)
+        public int AddPlace(PlaceViewModels placeModel, string userId)
         {
             if (placeModel.MainPhoto == null)
             {
@@ -129,7 +153,7 @@ namespace RestaurantGuide.Services
             {
                 Title = placeModel.Title,
                 Description = placeModel.Description,
-                UserId = placeModel.UserId
+                UserId = userId
             };
 
             _context.Places.Add(place);
@@ -143,7 +167,7 @@ namespace RestaurantGuide.Services
                     FilePath = $"images/{placeModel.MainPhoto.FileName}",
                     UploadDate = DateTime.Now,
                     IsMain = true,
-                    UserId = placeModel.UserId,
+                    UserId = userId,
                     PlaceId = place.Id
                 };
                 _context.Photos.Add(photo);

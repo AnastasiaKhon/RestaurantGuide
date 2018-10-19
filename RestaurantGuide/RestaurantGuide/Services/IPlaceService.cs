@@ -7,6 +7,6 @@ namespace RestaurantGuide.Services
     {
         List<PlaceListItemViewModels> GetPlaces();
         PlaceViewModels GetPlace(int id);
-        int AddPlace(PlaceViewModels placeModel);
+        int AddPlace(PlaceViewModels placeModel, string userId);
     }
 }
