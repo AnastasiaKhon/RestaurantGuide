@@ -18,7 +18,8 @@ namespace RestaurantGuide.Services
 
         public PlaceService(
             ApplicationContext context, 
-            IHostingEnvironment environment, FileUploadService fileUploadService)
+            IHostingEnvironment environment, 
+            FileUploadService fileUploadService)
         {
             _context = context;
             _environment = environment;

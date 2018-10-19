@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +15,11 @@ namespace RestaurantGuide.Controllers
 {
     public class PlaceController : Controller
     {
-        private readonly ApplicationContext _context;
-        private readonly PlaceService _placeService;
+        private readonly IPlaceService _placeService;
 
-        public PlaceController()
+        public PlaceController(IPlaceService placeService)
         {
-            _placeService = new PlaceService(_context);
+            _placeService = placeService;
         }
 
         // GET: Place
@@ -51,39 +51,11 @@ namespace RestaurantGuide.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Title,Description,MainPhoto")] PlaceViewModels placeModel)
+        public IActionResult Create(PlaceViewModels placeModel)
         {
             if (ModelState.IsValid)
-            {
+            {   
                 var placeId = _placeService.AddPlace(placeModel);
-                if (placeModel.MainPhoto == null)
-                {
-                    throw new Exception("Main photo is not set");
-                }
-
-                //var place = new Place()
-                //{
-                //    Title = placeModel.Title,
-                //    Description = placeModel.Description,
-                //    UserId = placeModel.UserId
-                //};
-
-                //_context.Add(place);
-                //_context.SaveChanges();
-
-                //if (placeModel.MainPhoto != null)
-                //{
-                //    var photo = new Photo()
-                //    {
-                //        Name = placeModel.MainPhoto.Name,
-                //        UploadDate = DateTime.Now,
-                //        IsMain = placeModel.MainPhoto.IsMain,
-                //        UserId = placeModel.UserId,
-                //        PlaceId = place.Id
-                //    };
-                //    _context.Add(photo);
-                //    _context.SaveChanges();
-                //}
                 return RedirectToAction(nameof(Index));
             }
             return View(placeModel);
