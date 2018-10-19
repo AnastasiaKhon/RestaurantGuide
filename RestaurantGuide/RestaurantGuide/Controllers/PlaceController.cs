@@ -23,9 +23,20 @@ namespace RestaurantGuide.Controllers
         }
 
         // GET: Place
-        public IActionResult Index()
+        public IActionResult Index(int page=1)
         {
-            return View(_placeService.GetPlaces());
+            int pageSize = 3;
+            var source = _placeService.GetPlaces();
+            var count = source.Count;
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            PlaceListViewModel viewModel = new PlaceListViewModel
+            {
+                PageViewModel = pageViewModel,
+                Places = items
+            };
+            return View(viewModel);
         }
 
         // GET: Place/Details/5
