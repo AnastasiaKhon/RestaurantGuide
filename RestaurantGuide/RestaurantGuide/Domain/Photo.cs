@@ -6,9 +6,10 @@ namespace RestaurantGuide.Domain
     public class Photo
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime UploadDate { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
         public bool IsMain { get; set; }
+        public DateTime UploadDate { get; set; }
 
         public int PlaceId { get; set; }
         public virtual Place Place { get; set; }
