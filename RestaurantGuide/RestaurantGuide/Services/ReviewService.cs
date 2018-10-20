@@ -5,11 +5,10 @@ using RestaurantGuide.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RestaurantGuide.Services
 {
-    public class ReviewService
+    public class ReviewService : IReviewService
     {
         private readonly ApplicationContext _context;
         private readonly IHostingEnvironment _environment;
@@ -46,22 +45,25 @@ namespace RestaurantGuide.Services
             return reviewList;
         }
 
-        public ReviewViewModels AddReview(ReviewViewModels reviewModel, string userId, int placeId)
+        public ReviewViewModels AddReview(ReviewViewModels reviewModel)
         { 
             var review = new Review()
             {
                 Text = reviewModel.Text,
                 Rating = Convert.ToInt32(reviewModel.Rating),
                 Date = DateTime.Now,
-                UserId = userId,
+                UserId = reviewModel.UserId,
                 PlaceId = reviewModel.PlaceId
             };
 
             _context.Reviews.Add(review);
             _context.SaveChanges();
-    
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == review.UserId);
+
+            reviewModel.Id = review.Id;
             reviewModel.Date = review.Date;
-            reviewModel.UserName = review.User.UserName;
+            reviewModel.UserName = user != null ? user.UserName : "";
 
             return reviewModel;
         }

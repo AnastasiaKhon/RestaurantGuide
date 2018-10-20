@@ -66,69 +66,17 @@ namespace RestaurantGuide.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PlaceViewModels placeModel)
+        public IActionResult Create(PlaceViewModels placeModel)
         {
             if (ModelState.IsValid)
             {
                 // var currentUser = await _userManager.(HttpContext.User);
-
                 var placeId = _placeService.AddPlace(placeModel, _userManager.GetUserId(User));
                 return RedirectToAction(nameof(Index));
             }
             return View(placeModel);
         }
-
-        // GET: Place/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var placeListItemViewModels = await _context.PlaceListItemViewModels.SingleOrDefaultAsync(m => m.Id == id);
-        //    if (placeListItemViewModels == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(placeListItemViewModels);
-        //}
-
-        // POST: Place/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Rating,PhotosCount,ReviewCount")] PlaceListItemViewModels placeListItemViewModels)
-        //{
-        //    if (id != placeListItemViewModels.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(placeListItemViewModels);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!PlaceListItemViewModelsExists(placeListItemViewModels.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(placeListItemViewModels);
-        //}
-
+        
         // GET: Place/Delete/5
         //public async Task<IActionResult> Delete(int? id)
         //{

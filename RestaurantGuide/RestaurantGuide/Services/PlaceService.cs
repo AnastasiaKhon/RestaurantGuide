@@ -37,13 +37,19 @@ namespace RestaurantGuide.Services
 
             foreach(var place in places)
             {
+                var mainPhoto = place.Photos.FirstOrDefault(p => p.PlaceId == place.Id && p.IsMain);
+                var rating = place.Reviews.Count() > 0
+                    ? Math.Round(place.Reviews.Sum(r => r.Rating) / (double)place.Reviews.Count(), 1)
+                    : 0;
+
                 var item = new PlaceListItemViewModels()
                 {
                     Id = place.Id,
                     Title = place.Title,
-                    Rating = Math.Round(place.Reviews.Sum(r => r.Rating) / (double)place.Reviews.Count(), 1),
+                    Rating = rating,
                     ReviewCount = place.Reviews.Count(),
-                    PhotosCount = place.Photos.Count()
+                    PhotosCount = place.Photos.Count(),
+                    MainPhotoPath = mainPhoto != null ? mainPhoto.FilePath : "images/restaurant-default.png"
                 };
                 placeItemList.Add(item);
             }

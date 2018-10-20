@@ -9,10 +9,13 @@ namespace RestaurantGuide.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string MainPhotoPath { get; set; }
+
 
         public double Rating { get; set; }
         public int PhotosCount { get; set; }
         public int ReviewCount { get; set; }
+
 
     }
 }

@@ -9,7 +9,7 @@ namespace RestaurantGuide.Models
     public class ReviewViewModels
     {
         public int Id { get; set; }
-        public int Text { get; set; }
+        public string Text { get; set; }
         public double Rating { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]

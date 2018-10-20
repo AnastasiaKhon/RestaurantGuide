@@ -16,7 +16,8 @@ namespace RestaurantGuide.Models
         public IFormFile MainPhoto { get; set; }
         public string MainPhotoPath { get; set; }
 
-        public List<ReviewViewModels> Reviews { get; set; }
-        public List<PhotoViewModels> Photos { get; set; }
+        public ReviewViewModels Review { get; set; }
+        public List<ReviewViewModels> Reviews { get; set; } = new List<ReviewViewModels>();
+        public List<PhotoViewModels> Photos { get; set; } = new List<PhotoViewModels>();
     }
 }

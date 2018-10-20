@@ -27,43 +27,66 @@
         <dd>
             <img src="~/@Model.MainPhotoPath" />
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Rating)
-        </dd>
     </dl>
 </div>
 
 <h3>Gallery</h3>
-<hr />
 <div>
-
+    <div>
+        @foreach (var item in Model.Photos)
+        {
+            <img src="~/@item.FilePath" />
+        }
+    </div>
 </div>
+<hr />
 
 <h3>Rating</h3>
-<hr />
 <div>
-
+    @Html.DisplayFor(model => model.Rating)
 </div>
 <hr />
 
 <h3>Reviews</h3>
-@*<div>
+<div>
     @foreach (var item in Model.Reviews)
     {
+    <div id="reviewItem">
         <div>On @item.Date, @item.UserName said: </div>
         <div>@item.Text</div>
         <div>@item.Rating</div>
+    </div>
     }
-</div>*@
+</div>
 
 <h3>Add review</h3>
-<textarea asp-for="Description" class="form-control"></textarea>
-
+<div id="review">
+    <textarea id="reviewText"></textarea>
+    <select id="reviewRating">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+    <input type="button" value="Send" onclick="sendReview(@Model.Id)" />
+</div>
 <hr />
-@*<div>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>*@
+
+@section Scripts{
+    <script>
+        function sendReview(placeId) {
+            $.ajax({
+                url: '@Url.Action("Create", "Review")',
+                type: 'POST',
+                data: { 'reviewText': $('#reviewText').val(), 'reviewRating': $('#reviewRating').val(), 'placeId': placeId },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                },
+            })
+        }
+    </script>
+}
