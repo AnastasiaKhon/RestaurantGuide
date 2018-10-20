@@ -48,14 +48,14 @@
 <hr />
 
 <h3>Reviews</h3>
-<div>
+<div id="reviewList">
     @foreach (var item in Model.Reviews)
     {
-    <div id="reviewItem">
-        <div>On @item.Date, @item.UserName said: </div>
-        <div>@item.Text</div>
-        <div>@item.Rating</div>
-    </div>
+        <div class="reviewItem">
+            <div>On @item.Date, @item.UserName said: </div>
+            <div>@item.Text</div>
+            <div>@item.Rating</div>
+        </div>
     }
 </div>
 
@@ -81,6 +81,9 @@
                 type: 'POST',
                 data: { 'reviewText': $('#reviewText').val(), 'reviewRating': $('#reviewRating').val(), 'placeId': placeId },
                 success: function (data) {
+                    $('#reviewText').val('');
+                    $('#reviewRating').val('1');
+                    $('#reviewList').prepend('<div class="reviewItem">\n <div>On ' + data['date'] + ', ' + data['userName'] + ' said: </div> \n <div>' + data.text + '</div>\n <div>' + data.rating + '</div> \n </div>');
                     console.log(data);
                 },
                 error: function (data) {

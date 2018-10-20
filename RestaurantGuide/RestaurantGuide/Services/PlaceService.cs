@@ -86,11 +86,6 @@ namespace RestaurantGuide.Services
                 placeModel.MainPhotoPath = mainPhoto.FilePath;
             }
 
-            //var photos = _context.Photos
-            //    .Include(r => r.User)
-            //    .Include(r => r.Place)
-            //    .Where(p => p.PlaceId == place.Id).ToList();
-
             if (place.Photos.Count > 0)
             {
                 var photosList = new List<PhotoViewModels>();
@@ -113,11 +108,6 @@ namespace RestaurantGuide.Services
                 placeModel.Photos = photosList;
             }
 
-            //var reviews = _context.Reviews
-            //    .Include(r => r.User)
-            //    .Include(r => r.Place)
-            //    .Where(r => r.PlaceId == place.Id).ToList();
-
             if (place.Reviews.Count() > 0)
             {
                 var reviewsList = new List<ReviewViewModels>();
@@ -136,8 +126,7 @@ namespace RestaurantGuide.Services
                     reviewsList.Add(reviewItem);
                 }
 
-                placeModel.Reviews = reviewsList;
-
+                placeModel.Reviews = reviewsList.OrderByDescending(r => r.Date).ToList();
                 placeModel.Rating = Math.Round(place.Reviews.Sum(r => r.Rating) / (double)place.Reviews.Count, 1);
             }
             else

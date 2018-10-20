@@ -20,17 +20,6 @@ namespace RestaurantGuide.Controllers
             _reviewService = reviewService;
             _userManager = userManager;
         }
-        // GET: Review
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: Review/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         // GET: Review/Create
         public ActionResult Create()
@@ -40,12 +29,10 @@ namespace RestaurantGuide.Controllers
 
         // POST: Review/Create
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public  ActionResult Create(string reviewText, string reviewRating, int placeId)
         {
             try
             {
-                // TODO: Add insert logic here
                 var reviewViewModel = new ReviewViewModels()
                 {
                     Text = reviewText.Length > 0 ? reviewText : null,
@@ -62,50 +49,27 @@ namespace RestaurantGuide.Controllers
             }
         }
 
-        // GET: Review/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        //// GET: Review/Delete/5
+        //public ActionResult Delete(int id)
+        //{
+        //    return View();
+        //}
 
-        // POST: Review/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
+        //// POST: Review/Delete/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        // TODO: Add delete logic here
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Review/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Review/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
     }
 }

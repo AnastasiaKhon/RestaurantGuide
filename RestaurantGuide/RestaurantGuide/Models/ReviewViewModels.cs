@@ -12,7 +12,6 @@ namespace RestaurantGuide.Models
         public string Text { get; set; }
         public double Rating { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime Date { get; set; }
 
         public string UserId { get; set; }
