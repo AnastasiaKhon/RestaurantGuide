@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -76,7 +77,22 @@ namespace RestaurantGuide.Controllers
             }
             return View(placeModel);
         }
-        
+
+        [HttpPost]
+        public ActionResult UploadPhotos(List<IFormFile> files, int placeId)
+        {
+            try
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                _placeService.UploadPhotosToPlace(files, placeId, currentUserId);
+                return Json("Success");
+            }
+            catch
+            {
+                return Json("Failed");
+            }
+        }
+
         // GET: Place/Delete/5
         //public async Task<IActionResult> Delete(int? id)
         //{

@@ -69,9 +69,24 @@
         <option value="4">4</option>
         <option value="5">5</option>
     </select>
-    <input type="button" value="Send" onclick="sendReview(@Model.Id)" />
+    <input type="button" value="Submit review" onclick="sendReview(@Model.Id)" />
 </div>
 <hr />
+
+<h3>Upload new photo</h3>
+<form method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-12">
+            <input type="file" id="filesUpload" name="files" multiple class="form-control" accept="image/*"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="padding-top:10px;">
+            <input type="button" id="btnUpload" value="Upload" onclick="uploadFiles(@Model.Id)"/>
+        </div>
+    </div>
+</form>
+
 
 @section Scripts{
     <script>
@@ -85,11 +100,39 @@
                     $('#reviewRating').val('1');
                     $('#reviewList').prepend('<div class="reviewItem">\n <div>On ' + data['date'] + ', ' + data['userName'] + ' said: </div> \n <div>' + data.text + '</div>\n <div>' + data.rating + '</div> \n </div>');
                     console.log(data);
+                    alert('Review was successfully added');
                 },
                 error: function (data) {
                     console.log(data);
                 },
             })
+        }
+
+        function uploadFiles(placeId) {
+            var files = $('#filesUpload').prop('files');
+            var fdata = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                fdata.append('files', files[i]);
+            }
+            if (files.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UploadPhotos", "Place")',
+                    //beforeSend: function (xhr) {
+                    //    xhr.setRequestHeader("XSRF-TOKEN",
+                    //        $('input:hidden[name="__RequestVerificationToken"]').val());
+                    //},
+                    data: { 'files': fdata, 'placeId': placeId }, 
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        alert('File Uploaded Successfully.')
+                    }
+                });
+            }
+            else {
+                alert('Please select a file.')
+            }
         }
     </script>
 }

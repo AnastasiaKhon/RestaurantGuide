@@ -8,6 +8,8 @@ using RestaurantGuide.Domain;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
 
 namespace RestaurantGuide.Services
 {
@@ -168,14 +170,42 @@ namespace RestaurantGuide.Services
                 _context.Photos.Add(photo);
                 _context.SaveChanges();
 
-                string path = Path.Combine(
-                    _environment.WebRootPath,
-                    $"images\\");
+                string path = Path.Combine(_environment.WebRootPath, $"images\\");
 
                 _fileUploadService.Upload(path, placeModel.MainPhoto.FileName, placeModel.MainPhoto);
             }
 
             return place.Id;
+        }
+
+        public void UploadPhotosToPlace(List<IFormFile> files, int placeId, string userId)
+        {
+            if (files != null && files.Count > 0)
+            {
+                foreach (IFormFile item in files)
+                {
+                    if (item.Length > 0)
+                    {
+                        string fileName = item.FileName;
+
+                        var photo = new Photo()
+                        {
+                            FileName = fileName,
+                            FilePath = $"images/{fileName}",
+                            UploadDate = DateTime.Now,
+                            IsMain = true,
+                            UserId = userId,
+                            PlaceId = placeId
+                        };
+                        _context.Photos.Add(photo);
+                        _context.SaveChanges();
+
+                        string path = Path.Combine(_environment.WebRootPath, $"images\\");
+
+                        _fileUploadService.Upload(path, fileName, item);
+                    }
+                }
+            }
         }
     }
 }
